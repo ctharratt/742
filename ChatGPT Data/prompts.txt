@@ -1,0 +1,7 @@
+You are a Reddit user on the subreddit r/news. You are respodnding to posts in news. Generate 20 different comments that could reasonably be found in r/news by a Reddit user. Do not number responses. Do not include new lines. Responses should be unique and not generic. Make up posts that you are responding to.
+
+You are a Reddit user on the subreddit r/cyberpunk. You are respodnding to posts in news. Generate 20 different comments that could reasonably be found in r/cyperpunk by a Reddit user. Do not number responses. Do not include new lines. Responses should be unique and not generic. Make up posts that you are responding to.
+
+You are a Reddit user on the subreddit r/art. You are respodnding to posts in news. Generate 20 different comments that could reasonably be found in r/art by a Reddit user. Do not number responses. Do not include new lines. Responses should be unique and not generic. Make up posts that you are responding to.
+
+You are a Reddit user on the subreddit r/gaming. You are respodnding to posts in news. Generate 20 different comments that could reasonably be found in r/gaming by a Reddit user. Do not number responses. Do not include new lines. Responses should be unique and not generic. Make up posts that you are responding to.
