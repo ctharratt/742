@@ -62,7 +62,7 @@ def full_vs_train(src, eval_set=False, mean_train=False):
         scores = scores.fill_diagonal_(0)
 
     # Find max author indexes and associated correct labels
-    maxes = torch.argmax(scores, dim=-1) // (3 if eval_set and not mean_train else 1)
+    maxes = torch.argmax(scores, dim=-1) // (3 if not eval_set or (eval_set and not mean_train) else 1)
     labels = torch.arange(0, maxes.size()[0], dtype=torch.long) // (1 if eval_set else 3)
 
     # Return accuracy
@@ -102,10 +102,20 @@ def eval_vs_train_recall_plot(src, save=None):
     labels = torch.arange(0, scores.size()[0], dtype=torch.long)
     indexes = [(o == l).nonzero(as_tuple=True)[0][0] for o, l in zip(order, labels)]
 
-    # Plot expected and evaluation cumulative probabilities
-    plt.plot((0, scores.size()[1]), (0, 1), label='Expected')
-    n, bins, patches = plt.hist(indexes, scores.size()[1], density=True, histtype='step',
-                                cumulative=True, label='Evaluated')
+    # Randomize order and calculate indexes of randomization
+    order_rand = torch.clone(order)
+    for i in range(order_rand.size(0)):
+        order_rand[i] = order_rand[i, torch.randperm(order_rand.size(1))]
+    indexes_rand = [(o == l).nonzero(as_tuple=True)[0][0] for o, l in zip(order_rand, labels)]
+
+    # Plot expected cumulative probabilities
+    _, _, patches = plt.hist(indexes_rand+[3000], scores.size()[1], density=True, histtype='step',
+                             cumulative=True, label='Random')
+    patches[0].set_xy(patches[0].get_xy()[:-1])
+
+    # Plot evaluated cumulative probabilities
+    _, _, patches = plt.hist(indexes+[3000], scores.size()[1], density=True, histtype='step',
+                             cumulative=True, label='Contriever')
     patches[0].set_xy(patches[0].get_xy()[:-1])
 
     # Make plots pretty
@@ -132,10 +142,20 @@ def eval_vs_mean_train_recall_plot(src, save=None):
     labels = torch.arange(0, scores.size()[0], dtype=torch.long)
     indexes = [(o == l).nonzero(as_tuple=True)[0][0] for o, l in zip(order, labels)]
 
+    # Randomize order and calculate indexes of randomization
+    order_rand = torch.clone(order)
+    for i in range(order_rand.size(0)):
+        order_rand[i] = order_rand[i, torch.randperm(order_rand.size(1))]
+    indexes_rand = [(o == l).nonzero(as_tuple=True)[0][0] for o, l in zip(order_rand, labels)]
+
+    # Plot expected cumulative probabilities
+    _, _, patches = plt.hist(indexes_rand + [1000], scores.size()[1], density=True, histtype='step',
+                             cumulative=True, label='Random')
+    patches[0].set_xy(patches[0].get_xy()[:-1])
+
     # Plot expected and evaluation cumulative probabilities
-    plt.plot((0, scores.size()[1]), (0, 1), label='Expected')
-    n, bins, patches = plt.hist(indexes, scores.size()[1], density=True, histtype='step',
-                                cumulative=True, label='Evaluated')
+    n, bins, patches = plt.hist(indexes + [1000], scores.size()[1], density=True, histtype='step',
+                                cumulative=True, label='Contriever')
     patches[0].set_xy(patches[0].get_xy()[:-1])
 
     # Make plots pretty
@@ -276,8 +296,8 @@ if __name__ == '__main__':
     # print(f"Author Furthest vs Author Furthest accuracy: {auth_vs_auth(embedding_src, method='min'):.2%}")
     print(f"One vs ChatGPT accuracy: {one_vs_gpt(embedding_src, num=10000):.2%}")
     print(f"Author vs ChatGPT accuracy: {auth_vs_gpt(embedding_src, num=10000):.2%}")
-    # print(f"Author Mean vs ChatGPT Mean accuracy: {auth_vs_gpt(embedding_src, method='mean'):.2%}")
-    # print(f"Author Furthest vs ChatGPT Furthest accuracy: {auth_vs_gpt(embedding_src, method='min'):.2%}")
+    print(f"Author Mean vs ChatGPT Mean accuracy: {auth_vs_gpt(embedding_src, method='mean'):.2%}")
+    print(f"Author Furthest vs ChatGPT Furthest accuracy: {auth_vs_gpt(embedding_src, method='min'):.2%}")
     print(f"Train set vs Train set accuracy: {full_vs_train(embedding_src):.2%}")
     print(f"Eval set vs Train set accuracy: {full_vs_train(embedding_src, eval_set=True):.2%}")
     print(f"Eval set vs Mean Train set accuracy: {full_vs_train(embedding_src, eval_set=True, mean_train=True):.2%}")
