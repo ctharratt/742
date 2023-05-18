@@ -55,5 +55,12 @@ if __name__ == '__main__':
     model.eval()
 
     # Generate embeddings for dataset
-    data_loop('./Data/RedditData', './Data/RedditEmbeddings2', model, tokenizer)
+    src = './Data/RedditData'
+    dest = './Data/RedditEmbeddings2'
+    if len(sys.argv) >= 3:
+        src = sys.argv[2]
+    if len(sys.argv) >= 4:
+        dest = sys.argv[3]
+
+    data_loop(src, dest, model, tokenizer)
 
