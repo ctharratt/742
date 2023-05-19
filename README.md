@@ -33,6 +33,6 @@ Note, for the following directions, `Data/RedditData` refers to a directory that
 ## Evaluation
 
 1. Generate embeddings for the entire dataset using `gen_embeddings.py` with arguments for the filepaths to the saved model, dataset, and output directory.
-   - Example: ```python gen-embeddings.py ./saved_model_directory/saved_model ./RedditData ./output_here```
+   - Example: ```python gen-embeddings.py ./saved_model_directory/saved_model.zip ./RedditData ./output_here```
 2. Run evaluation script `eval.py` on the embeddings dataset generated in the previous step
    - There are various evaluation functions and options that can be selected at the end of the file.
