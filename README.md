@@ -12,7 +12,7 @@ We discussed in our paper that we added a ChatGPT author to the Reddit Cross-Top
 To run the python file for generating the GPT Mimics, you will need to install the openai libraries. 
 `pip3 install openai` should be all you need to install the appropriate packages, but if you have issues you can look here: https://platform.openai.com/docs/api-reference?lang=python.
 
-To generate the mimics, you will need to change a few file paths within the file `mimic.py`. First, set `path_to_users` on line 7 to the filepath to wherever you have saved the Reddit Cross-Topic Authorship Verification Corpus. Then, set `output_directory` on line 8 to the filepath to where you would like the mimics to be saved. 
+To generate the mimics, you will need to change a few variables within the file `mimic.py`. First, set the `openai.api_key` variable to your OpenAI api key. Next, set `path_to_users` on line 7 to the filepath to wherever you have saved the Reddit Cross-Topic Authorship Verification Corpus. Then, set `output_directory` on line 8 to the filepath to where you would like the mimics to be saved. 
 
 Then you can simply run `python3 mimic.py`. 
 
@@ -22,13 +22,17 @@ You can see the mimic files we generated in the `GPT_Mimics` subdirectory.
 
 ## Fine-tuning Contriever
 
+Note, for the following directions, `Data/RedditData` refers to a directory that was created after the mimics were generated. `Data/RedditData` has a folder for each of the 1001 authors which contains the 4 known documents from the original Reddit Cross-Topic Authorship Verification Corpus (or the 4 generated documents we created in the case of the added GPT Author), 1 unknown document if applicable (applicable for all authors except for GPT Author), and the mimic for each author in the original reddit corpus.
+
 1. Read through the `src/options.py` file to comprehend what values will be used by the fine-tuning script.
 2. Run ```python finetuning.py [options]``` with any option values.
    - Example: ```python --model_path=facebook/contriever --train_data=Data/RedditData --eval_data=Data/RedditData --per_gpu_batch_size=16```
-3. The training will commence and store a model in the designated location if options are set correctly.
+   - Note that in the above example, the program is created to be able to parse out the correct number of files to be used for training and for evaluation from the `Data/RedditData` directory. 
+3. The training will commence and store a model in the designated location (found in the `src/options.py` file) if options are set correctly.
 
 ## Evaluation
 
-1. Generate embeddings for the entire dataset using `gen_embeddings.py` with the path to the saved model, dataset, and output director.
+1. Generate embeddings for the entire dataset using `gen_embeddings.py` with arguments for the filepaths to the saved model, dataset, and output directory.
+   - Example: ```python gen-embeddings.py ./saved_model_directory/saved_model ./RedditData ./output_here```
 2. Run evaluation script `eval.py` on the embeddings dataset generated in the previous step
    - There are various evaluation functions and options that can be selected at the end of the file.
